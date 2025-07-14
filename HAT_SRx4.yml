@@ -67,7 +67,7 @@ network_g:
 
 # path
 path:
-  pretrain_network_g: ./content/LAM_Demo/ModelZoo/models/HAT_SRx4.pth
+  pretrain_network_g: ./new_LAM/content/LAM_Demo/ModelZoo/models/HAT_SRx4.pth
   strict_load_g: true
   param_key_g: 'params_ema'
 
