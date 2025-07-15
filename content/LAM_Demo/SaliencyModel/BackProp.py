@@ -78,18 +78,21 @@ def LinearPath(fold):
 
 
 def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, cuda=False):
+    print('first stage')
     """
     :param path_interpolation_func:
         return \lambda(\alpha) and d\lambda(\alpha)/d\alpha, for \alpha\in[0, 1]
         This function return pil_numpy_images
     :return:
     """
+
     if cuda:
         model = model.cuda()
     cv_numpy_image = np.moveaxis(numpy_image, 0, 2)
     image_interpolation, lambda_derivative_interpolation = path_interpolation_func(cv_numpy_image)
     grad_accumulate_list = np.zeros_like(image_interpolation)
     result_list = []
+    print('second stage')
     # --------------
     # img_tensor = torch.from_numpy(image_interpolation[-1])
     # img_tensor.requires_grad_(True)
@@ -101,6 +104,7 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
         img_tensor = torch.from_numpy(image_interpolation[i])
         img_tensor.requires_grad_(True)
         if cuda:
+            print('third stage')
             result = model(_add_batch_one(img_tensor).cuda())
             target = attr_objective(result)
             target.backward()
@@ -108,6 +112,7 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
             if np.any(np.isnan(grad)):
                 grad[np.isnan(grad)] = 0.0
         else:
+            print('forth stage')
             result = model(_add_batch_one(img_tensor))
             target = attr_objective(result)
             target.backward()
