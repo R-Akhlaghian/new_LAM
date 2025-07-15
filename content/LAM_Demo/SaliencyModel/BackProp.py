@@ -113,7 +113,10 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
                 grad[np.isnan(grad)] = 0.0
         else:
             print('forth stage')
-            result = model(_add_batch_one(img_tensor))
+            model.feed_data({'lq': img_tensor})
+            model.test()
+            result = model.output.squeeze(0).cpu()
+            # result = model(_add_batch_one(img_tensor))
             target = attr_objective(result)
             target.backward()
             grad = img_tensor.grad.numpy()
