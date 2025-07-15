@@ -1,6 +1,7 @@
 import torch
 import cv2
 import torch.nn.functional as F
+import time
 
 
 def _tensor_size(t):
@@ -45,6 +46,7 @@ def attr_grad(tensor, h, w, window=8, reduce='sum'):
     :return:
     """
     print(f'h_x: {tensor.size()[2]} , w_x: {tensor.size[3]}')
+    time.sleep(5)
     h_x = tensor.size()[2]
     w_x = tensor.size()[3]
     h_grad = torch.pow(tensor[:, :, :h_x - 1, :] - tensor[:, :, 1:, :], 2)
