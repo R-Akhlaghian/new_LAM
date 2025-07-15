@@ -108,7 +108,10 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
         img_tensor.requires_grad_(True)
         if cuda:
             print('third stage')
-            result = model(_add_batch_one(img_tensor).cuda())
+            model.feed_data({'lq': img_tensor})
+            model.test()
+            result = model.output.squeeze(0).cpu()
+            # result = model(_add_batch_one(img_tensor).cuda())
             target = attr_objective(result)
             target.backward()
             grad = img_tensor.grad.cpu().numpy()
