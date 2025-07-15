@@ -109,12 +109,18 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
         if cuda:
             print('third stage')
             model.feed_data({'lq': img_tensor})
+            print('1')
             model.test()
+            print('2')
             result = model.output.squeeze(0).cpu()
             # result = model(_add_batch_one(img_tensor).cuda())
+            print('3')
             target = attr_objective(result)
+            print('4')
             target.backward()
+            print('5')
             grad = img_tensor.grad.cpu().numpy()
+            print('6')
             if np.any(np.isnan(grad)):
                 grad[np.isnan(grad)] = 0.0
             print('fifth stage')
