@@ -25,17 +25,28 @@ class HATModel(SRModel):
             self.mod_pad_w = window_size - w % window_size
         self.img = F.pad(self.lq, (0, self.mod_pad_w, 0, self.mod_pad_h), 'reflect')
 
+    # def process(self):
+    #     # model inference
+    #     if hasattr(self, 'net_g_ema'):
+    #         self.net_g_ema.eval()
+    #         with torch.no_grad():
+    #             self.output = self.net_g_ema(self.img)
+    #     else:
+    #         self.net_g.eval()
+    #         with torch.no_grad():
+    #             self.output = self.net_g(self.img)
+    #         # self.net_g.train()
+
     def process(self):
-        # model inference
         if hasattr(self, 'net_g_ema'):
             self.net_g_ema.eval()
-            with torch.no_grad():
-                self.output = self.net_g_ema(self.img)
+            # Remove with torch.no_grad():
+            self.output = self.net_g_ema(self.img)
         else:
             self.net_g.eval()
-            with torch.no_grad():
-                self.output = self.net_g(self.img)
-            # self.net_g.train()
+            self.output = self.net_g(self.img)
+            # Remove with torch.no_grad():
+            # self.net_g.train() # you can keep it as eval, no problem
 
     def tile_process(self):
         """It will first crop input images to tiles, and then process each tile.
