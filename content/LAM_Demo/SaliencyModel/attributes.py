@@ -47,9 +47,11 @@ def attr_grad(tensor, h, w, window=8, reduce='sum'):
     :param reduce: reduce method, ['mean', 'sum', 'max', 'min']
     :return:
     """
-
-    h_x = tensor.size()[1]
-    w_x = tensor.size()[2]
+    # h_x = 0
+    # w_x = 0
+    tensor = tensor.unsqueeze(0)
+    h_x = tensor.size()[2]
+    w_x = tensor.size()[3]
     h_grad = torch.pow(tensor[:, :, :h_x - 1, :] - tensor[:, :, 1:, :], 2)
     w_grad = torch.pow(tensor[:, :, :, :w_x - 1] - tensor[:, :, :, 1:], 2)
     grad = torch.pow(h_grad[:, :, :, :-1] + w_grad[:, :, :-1, :], 1 / 2)
