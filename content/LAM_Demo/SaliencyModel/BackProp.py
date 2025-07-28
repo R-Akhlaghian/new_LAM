@@ -105,6 +105,7 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
 
     for i in range(image_interpolation.shape[0]):
         img_tensor = torch.from_numpy(image_interpolation[i])
+        img_tensor = img_tensor.cuda()
         img_tensor.requires_grad_(True)
         if cuda:
             print('third stage')

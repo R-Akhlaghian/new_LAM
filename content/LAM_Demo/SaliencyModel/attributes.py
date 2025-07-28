@@ -38,7 +38,6 @@ def attr_id(tensor, h, w, window=8, reduce='sum'):
 
 def attr_grad(tensor, h, w, window=8, reduce='sum'):
     print(tensor.size())
-    time.sleep(10)
     """
     :param tensor: B, C, H, W tensor
     :param h: h position
