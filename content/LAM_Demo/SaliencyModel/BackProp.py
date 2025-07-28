@@ -77,7 +77,7 @@ def LinearPath(fold):
     return path_interpolation_func
 
 
-def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, cuda=False):
+def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, cuda=True):
     print('first stage')
     """
     :param path_interpolation_func:
