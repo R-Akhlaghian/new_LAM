@@ -91,12 +91,14 @@ class HATModel(SRModel):
                 try:
                     if hasattr(self, 'net_g_ema'):
                         self.net_g_ema.eval()
-                        with torch.no_grad():
-                            output_tile = self.net_g_ema(input_tile)
+                        # with torch.no_grad():
+                        #     output_tile = self.net_g_ema(input_tile)
+                        output_tile = self.net_g_ema(input_tile)
                     else:
                         self.net_g.eval()
-                        with torch.no_grad():
-                            output_tile = self.net_g(input_tile)
+                        # with torch.no_grad():
+                        #     output_tile = self.net_g(input_tile)
+                        output_tile = self.net_g(input_tile)
                 except RuntimeError as error:
                     print('Error', error)
                 print(f'\tTile {tile_idx}/{tiles_x * tiles_y}')
