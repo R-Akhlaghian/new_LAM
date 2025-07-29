@@ -78,7 +78,6 @@ def LinearPath(fold):
 
 
 def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, cuda=True):
-    print('first stage')
     """
     :param path_interpolation_func:
         return \lambda(\alpha) and d\lambda(\alpha)/d\alpha, for \alpha\in[0, 1]
@@ -95,7 +94,6 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
     image_interpolation, lambda_derivative_interpolation = path_interpolation_func(cv_numpy_image)
     grad_accumulate_list = np.zeros_like(image_interpolation)
     result_list = []
-    print('second stage')
     # --------------
     # img_tensor = torch.from_numpy(image_interpolation[-1])
     # img_tensor.requires_grad_(True)
@@ -108,27 +106,18 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
         img_tensor = img_tensor.cuda()
         img_tensor.requires_grad_(True)
         if cuda:
-            print('third stage')
             model.feed_data({'lq': img_tensor})
-            print('1')
             model.test()
-            print('2')
             # result = model(_add_batch_one(img_tensor).cuda())
             result = model.output.squeeze(0).cpu()
             print(result)
-            print('3')
             target = attr_objective(result)
             print(target)
-            print('4')
             target.backward()
-            print('5')
             grad = img_tensor.grad.cpu().numpy()
-            print('6')
             if np.any(np.isnan(grad)):
                 grad[np.isnan(grad)] = 0.0
-            print('fifth stage')
         else:
-            print('forth stage')
             model.feed_data({'lq': img_tensor})
             model.test()
             result = model.output.squeeze(0).cpu()
@@ -139,7 +128,6 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
             if np.any(np.isnan(grad)):
                 grad[np.isnan(grad)] = 0.0
 
-        print('sixth stage')
         grad_accumulate_list[i] = grad * lambda_derivative_interpolation[i]
         result_list.append(result.cpu().detach().numpy())
         # result_list.append(result)
