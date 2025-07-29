@@ -117,8 +117,7 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
             result = model.output.squeeze(0).cpu()
             print(result)
             print('3')
-            target = result
-            # target = attr_objective(result)
+            target = attr_objective(result)
             print(target)
             print('4')
             target.backward()
