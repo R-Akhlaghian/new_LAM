@@ -90,7 +90,7 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
         # change because of sr model instead of pytorch model
         if hasattr(model, 'generator'):  # Some SR models use 'generator' instead of 'network'
             model.generator = model.generator.cuda()
-    cv_numpy_image = np.moveaxis(numpy_image, 0, 2)
+    cv_numpy_image = np.moveaxis(numpy_image.numpy(), 0, 2)
     image_interpolation, lambda_derivative_interpolation = path_interpolation_func(cv_numpy_image)
     grad_accumulate_list = np.zeros_like(image_interpolation)
     result_list = []
