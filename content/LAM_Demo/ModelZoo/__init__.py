@@ -3,7 +3,7 @@ import os
 import torch
 import importlib
 
-MODEL_DIR = 'content\LAM_Demo\ModelZoo\models'
+MODEL_DIR = 'newLAM/content/LAM_Demo/ModelZoo/models'
 
 NN_LIST = [
     'RCAN',
