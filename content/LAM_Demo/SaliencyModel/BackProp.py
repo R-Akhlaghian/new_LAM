@@ -106,39 +106,53 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
         img_tensor = img_tensor.cuda()
         img_tensor.requires_grad_(True)
         if cuda:
-            # model.feed_data({'lq': img_tensor})
-            # model.test()
-            # # result = model(_add_batch_one(img_tensor).cuda())
-            # result = model.output.squeeze(0).cpu()
+            if hasattr(model, 'generator'):
+                # model.feed_data({'lq': img_tensor})
+                # model.test()
+                # # result = model(_add_batch_one(img_tensor).cuda())
+                # result = model.output.squeeze(0).cpu()
 
-            # Resolved Gradient flow issue
-            model.net_g.train()    # or .eval() if batchnorm/ dropout behaviour matters
-            with torch.enable_grad():
-                result = model.net_g(img_tensor).squeeze(0).cpu()
+                # Resolved Gradient flow issue
+                model.net_g.train()  # or .eval() if batchnorm/ dropout behaviour matters
+                with torch.enable_grad():
+                    result = model.net_g(img_tensor).squeeze(0).cpu()
 
-            # print(result)
-            target = attr_objective(result)
-            # print(target)
-            target.backward()
-            grad = img_tensor.grad.cpu().numpy()
-            if np.any(np.isnan(grad)):
-                grad[np.isnan(grad)] = 0.0
+                target = attr_objective(result)
+                target.backward()
+                grad = img_tensor.grad.cpu().numpy()
+                if np.any(np.isnan(grad)):
+                    grad[np.isnan(grad)] = 0.0
+            else:
+                result = model(_add_batch_one(img_tensor).cuda())
+                target = attr_objective(result)
+                target.backward()
+                grad = img_tensor.grad.cpu().numpy()
+                if np.any(np.isnan(grad)):
+                    grad[np.isnan(grad)] = 0.0
         else:
-            # model.feed_data({'lq': img_tensor})
-            # model.test()
-            # result = model.output.squeeze(0).cpu()
-            # result = model(_add_batch_one(img_tensor))
+            if hasattr(model, 'generator'):
+                # model.feed_data({'lq': img_tensor})
+                # model.test()
+                # result = model.output.squeeze(0).cpu()
+                # result = model(_add_batch_one(img_tensor))
 
-            # Resolved Gradient flow issue
-            model.net_g.train()    # or .eval() if batchnorm/ dropout behaviour matters
-            with torch.enable_grad():
-                result = model.net_g(img_tensor).squeeze(0).cpu()
-                
-            target = attr_objective(result)
-            target.backward()
-            grad = img_tensor.grad.numpy()
-            if np.any(np.isnan(grad)):
-                grad[np.isnan(grad)] = 0.0
+                # Resolved Gradient flow issue
+                model.net_g.train()  # or .eval() if batchnorm/ dropout behaviour matters
+                with torch.enable_grad():
+                    result = model.net_g(img_tensor).squeeze(0).cpu()
+
+                target = attr_objective(result)
+                target.backward()
+                grad = img_tensor.grad.numpy()
+                if np.any(np.isnan(grad)):
+                    grad[np.isnan(grad)] = 0.0
+            else:
+                result = model(_add_batch_one(img_tensor))
+                target = attr_objective(result)
+                target.backward()
+                grad = img_tensor.grad.numpy()
+                if np.any(np.isnan(grad)):
+                    grad[np.isnan(grad)] = 0.0
 
         grad_accumulate_list[i] = grad * lambda_derivative_interpolation[i]
         result_list.append(result.cpu().detach().numpy())
