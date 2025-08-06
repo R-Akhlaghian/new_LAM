@@ -64,7 +64,7 @@ def get_model(module_name, class_name, pretrained_model_name, package_path=".net
     # Get the class from the module
     model_class = getattr(module, class_name)
     # loading parameters in json file with the same name as class name
-    with open(f'content/new_LAM/content/LAM_Demo/ModelZoo/networks/{class_name}.json', 'r') as file:
+    with open(f'new_LAM/content/LAM_Demo/ModelZoo/networks/{class_name}.json', 'r') as file:
         params = json.load(file)
 
     net = model_class(**params)
