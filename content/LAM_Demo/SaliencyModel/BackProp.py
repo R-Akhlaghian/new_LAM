@@ -107,7 +107,7 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
             img_tensor = img_tensor.cuda()
         img_tensor.requires_grad_(True)
         if cuda:
-            if hasattr(model, 'generator'):
+            # if hasattr(model, 'generator'):
                 # model.feed_data({'lq': img_tensor})
                 # model.test()
                 # # result = model(_add_batch_one(img_tensor).cuda())
@@ -123,15 +123,18 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
                 grad = img_tensor.grad.cpu().numpy()
                 if np.any(np.isnan(grad)):
                     grad[np.isnan(grad)] = 0.0
-            else:
-                result = model(_add_batch_one(img_tensor))
-                target = attr_objective(result)
-                target.backward()
-                grad = img_tensor.grad.cpu().numpy()
-                if np.any(np.isnan(grad)):
-                    grad[np.isnan(grad)] = 0.0
+
+
+            # else:
+            #     result = model(_add_batch_one(img_tensor))
+            #     target = attr_objective(result)
+            #     target.backward()
+            #     grad = img_tensor.grad.cpu().numpy()
+            #     if np.any(np.isnan(grad)):
+            #         grad[np.isnan(grad)] = 0.0
+
         else:
-            if hasattr(model, 'generator'):
+            # if hasattr(model, 'generator'):
                 # model.feed_data({'lq': img_tensor})
                 # model.test()
                 # result = model.output.squeeze(0).cpu()
@@ -147,13 +150,13 @@ def Path_gradient(numpy_image, model, attr_objective, path_interpolation_func, c
                 grad = img_tensor.grad.numpy()
                 if np.any(np.isnan(grad)):
                     grad[np.isnan(grad)] = 0.0
-            else:
-                result = model(_add_batch_one(img_tensor))
-                target = attr_objective(result)
-                target.backward()
-                grad = img_tensor.grad.numpy()
-                if np.any(np.isnan(grad)):
-                    grad[np.isnan(grad)] = 0.0
+            # else:
+            #     result = model(_add_batch_one(img_tensor))
+            #     target = attr_objective(result)
+            #     target.backward()
+            #     grad = img_tensor.grad.numpy()
+            #     if np.any(np.isnan(grad)):
+            #         grad[np.isnan(grad)] = 0.0
 
         grad_accumulate_list[i] = grad * lambda_derivative_interpolation[i]
         result_list.append(result.cpu().detach().numpy())
